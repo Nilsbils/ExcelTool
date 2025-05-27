@@ -14,9 +14,14 @@ def search():
     result = df[df.iloc[:, 0].astype(str) == number]
     if not result.empty:
         querschnitt = result.iloc[0, 5]  # Column F
-        return jsonify({"Querschnitt": querschnitt})
+        kabeltyp = result.iloc[0, 1]  # Column B
+        return jsonify({
+            "Querschnitt": querschnitt,
+            "Kabeltyp": kabeltyp
+        })   
     else:
         return jsonify({"error": "Not found"}), 404
+    
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=10000)

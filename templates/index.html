@@ -1,14 +1,48 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Excel Number Search</title>
+    <title>Excel Search</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 2em;
+        }
+        label, input, button {
+            font-size: 1em;
+            margin: 0.5em 0;
+        }
+        #resultTable {
+            margin-top: 1em;
+            border-collapse: collapse;
+            width: 50%;
+        }
+        #resultTable th, #resultTable td {
+            border: 1px solid #ccc;
+            padding: 0.5em 1em;
+        }
+        #error {
+            color: red;
+            margin-top: 1em;
+        }
+    </style>
 </head>
 <body>
-    <h1>Excel Search</h1>
+    <h1>Excel Lookup</h1>
     <label for="searchNumber">Number:</label>
     <input type="text" id="searchNumber" placeholder="Enter Number">
     <button onclick="search()">Search</button>
-    <pre id="result"></pre>
+
+    <table id="resultTable" style="display:none;">
+        <thead>
+            <tr>
+                <th>Querschnitt</th>
+                <th>Kabeltyp</th>
+            </tr>
+        </thead>
+        <tbody id="resultBody"></tbody>
+    </table>
+
+    <div id="error"></div>
 
     <script>
         function search() {
@@ -20,16 +54,28 @@
             })
             .then(response => response.json())
             .then(data => {
-                if (data.Querschnitt !== undefined) {
-                    document.getElementById('result').textContent = "Querschnitt: " + data.Querschnitt;
+                const table = document.getElementById('resultTable');
+                const body = document.getElementById('resultBody');
+                const error = document.getElementById('error');
+
+                if (data.error) {
+                    table.style.display = "none";
+                    error.textContent = "Not found.";
                 } else {
-                    document.getElementById('result').textContent = "Not found.";
+                    body.innerHTML = `
+                        <tr>
+                            <td>${data.Querschnitt}</td>
+                            <td>${data.Kabeltyp}</td>
+                        </tr>`;
+                    table.style.display = "table";
+                    error.textContent = "";
                 }
             })
-            .catch(error => {
-                document.getElementById('result').textContent = "Error occurred.";
+            .catch(err => {
+                document.getElementById('error').textContent = "Error occurred.";
             });
         }
     </script>
 </body>
 </html>
+
