@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Excel Number Search</title>
+</head>
+<body>
+    <h1>Excel Search</h1>
+    <label for="searchNumber">Number:</label>
+    <input type="text" id="searchNumber" placeholder="Enter Number">
+    <button onclick="search()">Search</button>
+    <pre id="result"></pre>
+
+    <script>
+        function search() {
+            const number = document.getElementById('searchNumber').value;
+            fetch('/search', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `number=${encodeURIComponent(number)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.Querschnitt !== undefined) {
+                    document.getElementById('result').textContent = "Querschnitt: " + data.Querschnitt;
+                } else {
+                    document.getElementById('result').textContent = "Not found.";
+                }
+            })
+            .catch(error => {
+                document.getElementById('result').textContent = "Error occurred.";
+            });
+        }
+    </script>
+</body>
+</html>
